@@ -27,6 +27,8 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router'
+import { genTestUserSig } from "./../../debug";
+import { useTIMStore } from "./../store/chat";
 
 const formState = reactive({
     username: "",
@@ -35,9 +37,20 @@ const formState = reactive({
 
 const router = useRouter()
 
-const login = () => {
+const TIMStore = useTIMStore()
+
+const login = async () => {
+    
+    const {userSig} = genTestUserSig({
+        userID:formState.username,
+        SDKAppID:1600014384,
+        secretKey:'8924eb01fd950d55b25774b688b2f27c28fb393d94490b6d3114a642d11b2e15'
+    })
+    await TIMStore.timCore.timLogin({
+        userSig,
+        userID:formState.username
+    })
     router.push('/home')
-    console.log(formState)
 }
 </script>
 
