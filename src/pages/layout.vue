@@ -39,21 +39,29 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
 } from '@ant-design/icons-vue';
-import {useRouter} from 'vue-router'
+import { useRouter } from 'vue-router'
 const selectedKeys = ref<string[]>(['1']);
 const collapsed = ref<boolean>(false);
 
 const router = useRouter()
-const loginout=()=>{
-    router.push("./login")
-  }
 
-const linkPage = ({key}:{key:string})=>{
+const TIMStore = useTIMStore()
+
+TIMStore.timCore.messageReceived = (event) => {
+  TIMStore.subscribeMessage(event)
+}
+
+const loginout = () => {
+  router.push("./login")
+}
+
+const linkPage = ({ key }: { key: string }) => {
   router.push(key)
 
 }
 
 import type { SizeType } from 'ant-design-vue/es/config-provider';
+import { useTIMStore } from '../store/chat';
 const size = ref<SizeType>('large');
 </script>
 <style scoped>
@@ -61,7 +69,7 @@ const size = ref<SizeType>('large');
   height: 100vh;
 }
 
-.layout-header{
+.layout-header {
   display: flex;
   align-items: center;
   justify-content: space-between;

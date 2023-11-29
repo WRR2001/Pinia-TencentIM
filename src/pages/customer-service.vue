@@ -21,8 +21,8 @@
                         </div>
                     </div>
                 </div>
-                <a-textarea class="textarea" v-model:value="value2" placeholder="回车发送消息"
-                    :auto-size="{ minRows: 2, maxRows: 5 }" />
+                <a-textarea class="textarea" v-model:value="chatMessage" placeholder="回车发送消息"
+                    :auto-size="{ minRows: 2, maxRows: 5 }" @pressEnter="sendMsg" />
             </div>
         </a-card>
     </div>
@@ -31,6 +31,7 @@
 <script lang="ts" setup>
 import { reactive, ref, watch, VueElement } from 'vue';
 import type { MenuProps, ItemType } from 'ant-design-vue';
+import { useTIMStore } from '../store/chat';
 
 const chatLogs = ref([
     {
@@ -46,6 +47,15 @@ const chatLogs = ref([
         flow: "out"
     }
 ])
+const chatMessage = ref("")
+const TIMStore = useTIMStore()
+const sendMsg = () => {
+    console.log(chatMessage.value)
+    TIMStore.timCore.sendMessage('admin', {
+        text: chatMessage.value
+    })
+
+}
 
 const selectedKeys = ref<string[]>(['1']);
 const openKeys = ref<string[]>(['sub1']);
@@ -81,7 +91,6 @@ watch(openKeys, val => {
     console.log('openKeys', val);
 });
 
-const value2 = ref<string>('');
 </script>
 
 <style scoped lang="scss">
