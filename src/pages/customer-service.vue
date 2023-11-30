@@ -91,6 +91,10 @@ watch(openKeys, val => {
     console.log('openKeys', val);
 });
 
+TIMStore.timCore.onReady = ()=>{
+    TIMStore.getSessionList()
+}
+
 </script>
 
 <style scoped lang="scss">

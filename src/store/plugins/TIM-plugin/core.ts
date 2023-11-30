@@ -40,10 +40,32 @@ export default class TIMCore {
         this.tim = chat
 
     }
+    private persistedLogin = ()=>{
+        const timCoreLoginParams=JSON.parse(localStorage.getItem('TIMCoreLoginParams')||"{}")
+        if (timCoreLoginParams.userID){
+            this.timLogin(timCoreLoginParams)
+        }
+    }
+
+    public timLogout =()=>{
+        this.unBindTIMEEvent()
+        this.tim?.logout()
+    }
+
+    //解绑监听的事件
+    public unBindTIMEEvent = ()=>{
+        this.tim?.off(TIM.EVENT.MESSAGE_RECEIVED,()=>{})
+        this.tim?.off(TIM.EVENT.SDK_READY,()=>{})
+
+
+    }
+
 
     public timLogin = async (options: TIMCoreLoginParams) => {
         //登录SDK
         await this.tim?.login(options)
+        //持久化
+        localStorage.setItem('TIMCoreLoginParams',JSON.stringify(options))
         this.userID = options.userID
         this.bindTIMEvent()
     }
@@ -54,7 +76,12 @@ export default class TIMCore {
 
     private handleSDKReady=()=>{
         console.log("SDK准备完成")
+        this.onReady()
         this.tim?.on(TIM.EVENT.MESSAGE_RECEIVED,this.handleMessageReceived,this)
+    }
+
+    public onReady =()=>{
+
     }
 
     private handleMessageReceived = (event:any)=>{
